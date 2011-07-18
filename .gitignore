@@ -22,5 +22,4 @@ pkg
 *.so
 *.o
 *.log
-*.gemspec
 tmp/*
