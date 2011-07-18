@@ -447,7 +447,7 @@ rescue LoadError
       def self::read_pair(buf)
         nlen = read_length(buf)
         vlen = read_length(buf)
-        return buf.slice!(0, nlen), buf.slice!(0, vlen)
+        [buf.slice!(0, nlen), buf.slice!(0, vlen)]
       end
       
       def self::read_length(buf)
