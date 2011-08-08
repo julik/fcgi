@@ -16,10 +16,10 @@ begin
 rescue LoadError
   require 'socket'
   require 'stringio'
-
+  
   class FCGI
-
-    def self::is_cgi?
+    
+    def self.is_cgi?
       begin
         s = Socket.for_fd($stdin.fileno)
         s.getpeername
@@ -31,21 +31,21 @@ rescue LoadError
       end
     end
 
-    def self::each(&block)
+    def self.each(&block)
       f = default_connection()
       Server.new(f).each_request(&block)
     ensure
       f.close if f
     end
 
-    def self::each_request(&block)
+    def self.each_request(&block)
       f = default_connection()
       Server.new(f).each_request(&block)
     ensure
       f.close if f
     end
 
-    def self::default_connection
+    def self.default_connection
       ::Socket.for_fd($stdin.fileno)
     end
 
@@ -306,11 +306,11 @@ rescue LoadError
       HEADER_FORMAT = 'CCnnCC'
       HEADER_LENGTH = 8
 
-      def self::parse_header(buf)
+      def self.parse_header(buf)
         return *buf.unpack(HEADER_FORMAT)
       end
 
-      def self::class_for(type)
+      def self.class_for(type)
         RECORD_CLASS[type]
       end
 
@@ -385,7 +385,7 @@ rescue LoadError
       # uint8_t  reserved[3];
       BODY_FORMAT = 'NCC3'
 
-      def self::parse(id, body)
+      def self.parse(id, body)
         appstatus, protostatus, *reserved = *body.unpack(BODY_FORMAT)
         new(id, appstatus, protostatus)
       end
@@ -411,7 +411,7 @@ rescue LoadError
       # uint8_t reserved[7];
       BODY_FORMAT = 'CC7'
 
-      def self::parse(id, body)
+      def self.parse(id, body)
         type, *reserved = *body.unpack(BODY_FORMAT)
         new(id, type)
       end
@@ -431,11 +431,11 @@ rescue LoadError
     end
 
     class ValuesRecord < Record
-      def self::parse(id, body)
+      def self.parse(id, body)
         new(id, parse_values(body))
       end
 
-      def self::parse_values(buf)
+      def self.parse_values(buf)
         result = {}
         until buf.empty?
           name, value = *read_pair(buf)
@@ -444,13 +444,13 @@ rescue LoadError
         result
       end
       
-      def self::read_pair(buf)
+      def self.read_pair(buf)
         nlen = read_length(buf)
         vlen = read_length(buf)
         [buf.slice!(0, nlen), buf.slice!(0, vlen)]
       end
       
-      def self::read_length(buf)
+      def self.read_length(buf)
         if "".respond_to?(:bytes) # Ruby 1.9 string semantics
           if buf[0].bytes.first >> 7 == 0
             buf.slice!(0,1)[0].bytes.first
@@ -511,7 +511,7 @@ rescue LoadError
     end
 
     class GenericDataRecord < Record
-      def self::parse(id, body)
+      def self.parse(id, body)
         new(id, body)
       end
 
@@ -577,13 +577,13 @@ end # begin
 # are defined within module 'CGI', even if you have subclassed it
 
 class FCGI
-  def self::each_cgi(*args)
+  def self.each_cgi(*args)
     require 'cgi'
     
     eval(<<-EOS,TOPLEVEL_BINDING)
     class CGI
       public :env_table
-      def self::remove_params
+      def self.remove_params
         if (const_defined?(:CGI_PARAMS))
           remove_const(:CGI_PARAMS)
           remove_const(:CGI_COOKIES)
