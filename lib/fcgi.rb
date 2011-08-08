@@ -450,14 +450,17 @@ rescue LoadError
         [buf.slice!(0, nlen), buf.slice!(0, vlen)]
       end
       
-      def self.read_length(buf)
-        if "".respond_to?(:bytes) # Ruby 1.9 string semantics
+      
+      if "".respond_to?(:bytes) # Ruby 1.9 string semantics
+        def self.read_length(buf)
           if buf[0].bytes.first >> 7 == 0
             buf.slice!(0,1)[0].bytes.first
           else
             buf.slice!(0,4).unpack('N')[0] & ((1<<31) - 1)
           end
-        else
+        end
+      else # Ruby 1.8 string
+        def self.read_length(buf)
           if buf[0] >> 7 == 0
             buf.slice!(0,1)[0].bytes.first
           else
@@ -619,13 +622,14 @@ class FCGI
       yield ::CGI.new(*args)
     else
       exit_requested = false
-      FCGI::each {|request|
+      FCGI::each do |request|
+        
         $stdout, $stderr = request.out, request.err
-
+        
         yield CGI.new(request, *args)
         
         request.finish
-      }
+      end
     end
   end
 end
