@@ -1,3 +1,6 @@
+	* ruby 1.8.x and 1.9.x compability patches for string handling under pure-ruby
+	* ensure the dynamic library gets loaded even on systems that do not use .so extension
+
 Wed Nov 28 11:15:09 JST 2009 saksmlz@gmail.com
 	* ruby 1.8.x compability patch
 

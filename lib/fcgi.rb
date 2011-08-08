@@ -1,19 +1,23 @@
 =begin
 
-fcgi.rb 0.8.5 - fcgi.so compatible pure-ruby FastCGI library
+fcgi.rb 0.9.0 - fcgi.so compatible pure-ruby FastCGI library
 
 fastcgi.rb Copyright (C) 2001 Eli Green
 fcgi.rb    Copyright (C) 2002-2003 MoonWolf <moonwolf@moonwolf.com>
 fcgi.rb    Copyright (C) 2004 Minero Aoki
+fcgi.rb    Copyright (C) 2011 saks and Julik Tarkhanov
 
 =end
 trap('SIGTERM') { exit }
 trap('SIGPIPE','IGNORE')
 
 begin
-  raise LoadError if defined?(FCGI_PURE_RUBY) && FCGI_PURE_RUBY
-  require "fcgi.so"
-rescue LoadError
+  raise LoadError if ENV["USE_PURE_RUBY_FCGI"]
+  require "fcgi/fcgi"
+rescue LoadError # Load the pure ruby version instead
+  # At this point we do have STDERR so put it to some good use
+  $stderr.puts "Your FCGI gem does not contain the FCGI shared library, running pure ruby instead"
+  
   require 'socket'
   require 'stringio'
   
