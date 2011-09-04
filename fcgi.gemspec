@@ -33,7 +33,7 @@ Gem::Specification.new do |s|
     "ext/fcgi/extconf.rb",
     "ext/fcgi/fcgi.c",
     "lib/fcgi.rb",
-    "ruby-fcgi.gemspec",
+    "fcgi.gemspec",
     "test/helper.rb",
     "test/test_fcgi.rb"
   ]
